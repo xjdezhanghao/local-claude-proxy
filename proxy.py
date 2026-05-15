@@ -6,8 +6,9 @@ from fastapi.responses import StreamingResponse, Response
 app = FastAPI()
 
 # ─── 配置区 ──────────────────────────────────────────
-TARGET = "http://192.168.x.x:30001"   # 模型服务地址
+TARGET = "http://192.168.x.x:33333"   # 模型服务地址
 MODEL_NAME = "ds"                       # 模型实际 id
+API_KEY = "sk-anything"
 # ─────────────────────────────────────────────────────
 
 
@@ -43,6 +44,7 @@ async def proxy(path: str, request: Request):
 
     headers = {k: v for k, v in request.headers.items() if k.lower() != "host"}
     headers["content-length"] = str(len(body))
+    headers["authorization"] = f"Bearer {API_KEY}"
 
     async with httpx.AsyncClient(timeout=300) as client:
         resp = await client.request(
